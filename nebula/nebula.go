@@ -4,22 +4,24 @@ import (
 	"context"
 
 	"github.com/sirupsen/logrus"
-	pb "gitlab.com/Startail/Nebula-API/nebulapb"
+	"gitlab.com/Startail/Nebula-API/nebulapb"
 	"google.golang.org/grpc"
 )
 
 var cConn *grpc.ClientConn
-var client pb.NebulaClient
+var client nebulapb.NebulaClient
 
 func NewClient() {
 	conn, err := grpc.Dial("localhost:17200", grpc.WithInsecure())
 	if err != nil {
-		logrus.Fatalf("can not connect: %v", err)
+		logrus.WithError(err).Fatalf("[Nebula] Failed connect to Nebula-API")
+		return
 	}
+	logrus.Printf("[Nebula] Connected Nebula-API")
 	//defer conn.Close()
 
 	cConn = conn
-	client = pb.NewNebulaClient(conn)
+	client = nebulapb.NewNebulaClient(conn)
 }
 
 func Shutdown() {
@@ -27,30 +29,30 @@ func Shutdown() {
 }
 
 // GetServerEntry - Get All Servers
-func GetServerEntry() ([]*pb.ServerEntry, error) {
+func GetServerEntry() ([]*nebulapb.ServerEntry, error) {
 	logrus.Printf("[Server] Getting...")
-	v, err := client.GetServerEntry(context.Background(), &pb.GetServerEntryRequest{})
+	v, err := client.GetServerEntry(context.Background(), &nebulapb.GetServerEntryRequest{})
 	return v.Entry, err
 }
 
 // AddServerEntry - Add Server to Database
 func AddServerEntry(name, displayName, address string, port int32) error {
 	logrus.Printf("[Server] Request..")
-	e := pb.ServerEntry{
+	e := nebulapb.ServerEntry{
 		Name:        name,
 		DisplayName: displayName,
 		Address:     address,
 		Port:        port,
 		Motd:        "",
 	}
-	_, err := client.AddServerEntry(context.Background(), &pb.AddServerEntryRequest{Entry: &e})
+	_, err := client.AddServerEntry(context.Background(), &nebulapb.AddServerEntryRequest{Entry: &e})
 
 	return err
 }
 
 func RemoveServerEntry(name string) error {
 	logrus.Printf("[Server] Remove....")
-	_, err := client.RemoveServerEntry(context.Background(), &pb.RemoveServerEntryRequest{Name: name})
+	_, err := client.RemoveServerEntry(context.Background(), &nebulapb.RemoveServerEntryRequest{Name: name})
 
 	return err
 }

@@ -10,8 +10,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var session *discordgo.Session
+
+// InitDiscordBot - Initialize Discord Bot
 func InitDiscordBot(token string) error {
 	dg, err := discordgo.New("Bot " + token)
+	session = dg
 	defer dg.Close()
 
 	if err != nil {
@@ -75,6 +79,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 		cmdRemoveServer(s, m)
+	}
+
+	if strings.HasPrefix(m.Content, "!lookup") {
+		if !hasRole(s, m, []string{"administrator", "developer", "moderator"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdLookup(s, m)
 	}
 
 	// If the message is "ping" reply with "Pong!"
