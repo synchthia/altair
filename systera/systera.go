@@ -3,6 +3,7 @@ package systera
 import (
 	"context"
 	"errors"
+	"os"
 
 	"github.com/sirupsen/logrus"
 	"gitlab.com/Startail/Systera-API/systerapb"
@@ -13,8 +14,11 @@ var cConn *grpc.ClientConn
 var client systerapb.SysteraClient
 
 func NewClient() {
-	//conn, err := grpc.Dial("argon.synchthia.net:17300", grpc.WithInsecure())
-	conn, err := grpc.Dial("localhost:17300", grpc.WithInsecure())
+	address := os.Getenv("SYSTERA_ADDRESS")
+	if len(address) == 0 {
+		address = "localhost:17300"
+	}
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		logrus.WithError(err).Fatalf("[Systera] Failed connect to Systera-API")
 		return
@@ -34,14 +38,16 @@ func Shutdown() {
 // SYSTEM
 // -------------
 
-// Execute - Dispatch Command to Server
-func Execute(target, command string) {
-	client.Dispatch(context.Background(), &systerapb.DispatchRequest{Target: target, Cmd: command})
+// Dispatch - Dispatch Command to Server
+func Dispatch(target, command string) error {
+	_, err := client.Dispatch(context.Background(), &systerapb.DispatchRequest{Target: target, Cmd: command})
+	return err
 }
 
 // Announce - Announce to Server
-func Announce(target, message string) {
-	client.Announce(context.Background(), &systerapb.AnnounceRequest{Target: target, Message: message})
+func Announce(target, message string) error {
+	_, err := client.Announce(context.Background(), &systerapb.AnnounceRequest{Target: target, Message: message})
+	return err
 }
 
 // ----------------
@@ -100,6 +106,5 @@ func LookupPunish(playerUUID string) ([]*systerapb.PunishEntry, error) {
 		FilterLevel:    0,
 		IncludeExpired: true,
 	})
-
 	return r.Entry, err
 }

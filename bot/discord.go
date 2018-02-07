@@ -89,6 +89,22 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdLookup(s, m)
 	}
 
+	if strings.HasPrefix(m.Content, "!announce") {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdAnnounce(s, m)
+	}
+
+	if strings.HasPrefix(m.Content, "!dispatch") {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdDispatch(s, m)
+	}
+
 	// If the message is "ping" reply with "Pong!"
 	if m.Content == "!ping" {
 		s.ChannelMessageSend(m.ChannelID, "Pong!")

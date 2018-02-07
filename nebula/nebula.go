@@ -2,6 +2,7 @@ package nebula
 
 import (
 	"context"
+	"os"
 
 	"github.com/sirupsen/logrus"
 	"gitlab.com/Startail/Nebula-API/nebulapb"
@@ -12,7 +13,12 @@ var cConn *grpc.ClientConn
 var client nebulapb.NebulaClient
 
 func NewClient() {
-	conn, err := grpc.Dial("localhost:17200", grpc.WithInsecure())
+	address := os.Getenv("NEBULA_ADDRESS")
+	if len(address) == 0 {
+		address = "localhost:17200"
+	}
+
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		logrus.WithError(err).Fatalf("[Nebula] Failed connect to Nebula-API")
 		return
