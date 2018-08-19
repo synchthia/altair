@@ -57,7 +57,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if strings.HasPrefix(m.Content, "!servers") {
+	if strings.Fields(m.Content)[0] == "!servers" {
 		if !hasRole(s, m, []string{"administrator"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
 			return
@@ -65,7 +65,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdServers(s, m)
 	}
 
-	if strings.HasPrefix(m.Content, "!addserver") {
+	if strings.Fields(m.Content)[0] == "!addserver" {
 		if !hasRole(s, m, []string{"administrator"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
 			return
@@ -73,7 +73,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdAddServer(s, m)
 	}
 
-	if strings.HasPrefix(m.Content, "!removeserver") {
+	if strings.Fields(m.Content)[0] == "!removeserver" {
 		if !hasRole(s, m, []string{"administrator"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
 			return
@@ -81,7 +81,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdRemoveServer(s, m)
 	}
 
-	if strings.HasPrefix(m.Content, "!lookup") {
+	if strings.Fields(m.Content)[0] == "!lookup" {
 		if !hasRole(s, m, []string{"administrator", "developer", "moderator"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
 			return
@@ -89,7 +89,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdLookup(s, m)
 	}
 
-	if strings.HasPrefix(m.Content, "!announce") {
+	if strings.Fields(m.Content)[0] == "!announce" {
 		if !hasRole(s, m, []string{"administrator", "developer"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
 			return
@@ -97,12 +97,72 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdAnnounce(s, m)
 	}
 
-	if strings.HasPrefix(m.Content, "!dispatch") {
+	if strings.Fields(m.Content)[0] == "!dispatch" {
 		if !hasRole(s, m, []string{"administrator", "developer"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
 			return
 		}
 		cmdDispatch(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!setgroup" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdSetGroup(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!creategroup" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdCreateGroup(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!removegroup" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdRemoveGroup(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!addpermission" || strings.Fields(m.Content)[0] == "!addperms" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdAddPermission(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!removepermission" || strings.Fields(m.Content)[0] == "!removeperms" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdRemovePermission(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!setmotd" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdSetMotd(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!setfavicon" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdSetFavicon(s, m)
+	}
+
+	if strings.Fields(m.Content)[0] == "!uuid" {
+		cmdUUID(s, m)
 	}
 
 	// If the message is "ping" reply with "Pong!"

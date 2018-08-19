@@ -42,7 +42,7 @@ func GetServerEntry() ([]*nebulapb.ServerEntry, error) {
 }
 
 // AddServerEntry - Add Server to Database
-func AddServerEntry(name, displayName, address string, port int32) error {
+func AddServerEntry(name, displayName, address string, port int32, fallback bool) error {
 	logrus.Printf("[Server] Request..")
 	e := nebulapb.ServerEntry{
 		Name:        name,
@@ -50,6 +50,7 @@ func AddServerEntry(name, displayName, address string, port int32) error {
 		Address:     address,
 		Port:        port,
 		Motd:        "",
+		Fallback:    fallback,
 	}
 	_, err := client.AddServerEntry(context.Background(), &nebulapb.AddServerEntryRequest{Entry: &e})
 
@@ -59,6 +60,18 @@ func AddServerEntry(name, displayName, address string, port int32) error {
 func RemoveServerEntry(name string) error {
 	logrus.Printf("[Server] Remove....")
 	_, err := client.RemoveServerEntry(context.Background(), &nebulapb.RemoveServerEntryRequest{Name: name})
+
+	return err
+}
+
+func SetMotd(motd string) error {
+	_, err := client.SetMotd(context.Background(), &nebulapb.SetMotdRequest{Motd: motd})
+
+	return err
+}
+
+func SetFavicon(favicon string) error {
+	_, err := client.SetFavicon(context.Background(), &nebulapb.SetFaviconRequest{Favicon: favicon})
 
 	return err
 }

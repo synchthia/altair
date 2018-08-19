@@ -9,13 +9,13 @@ import (
 	"gitlab.com/Startail/Systera-API/systerapb"
 )
 
-func ReportMessage(data systerapb.ReportEntryStream) {
+func ReportMessage(data systerapb.PunishmentStream) {
 	roomID := os.Getenv("DISCORD_MODERATOR_ALERT_ROOMID")
 	if len(roomID) == 0 {
 		return
 	}
 
-	entry := data.Entry
+	entry := data.ReportEntry
 	// -> DISCORD_MODERATOR_ALERT_ROOMID
 	embed := &discordgo.MessageEmbed{
 		Color: 0xFF9800,

@@ -21,7 +21,7 @@ func cmdRemoveServer(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	err := nebula.RemoveServerEntry(name)
 	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf(":warning: Error!: %s", err))
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf(":warning: Error: `%s`", err.Error()))
 		logrus.WithError(err).Errorf("[cmdRemoveServer]")
 		return
 	}

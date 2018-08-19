@@ -54,6 +54,24 @@ func Announce(target, message string) error {
 // Player
 // ----------------
 
+// GetProfile - GetProfile UUID or String
+func GetProfile(uuidOrString string) (systerapb.PlayerEntry, error) {
+	if len(uuidOrString) == 32 {
+		r, err := FetchPlayerProfile(uuidOrString)
+		if err != nil {
+			logrus.WithError(err).Errorf("Failed Lookup Player's Profile(from UUID)")
+			return systerapb.PlayerEntry{}, err
+		}
+		return *r, nil
+	}
+	r, err := FetchPlayerProfileByName(uuidOrString)
+	if err != nil {
+		logrus.WithError(err).Errorf("Failed Lookup Player's Profile(from Name)")
+		return systerapb.PlayerEntry{}, err
+	}
+	return *r, nil
+}
+
 // FetchPlayerProfileByName - Get Player's Profile By Name
 func FetchPlayerProfileByName(playerName string) (*systerapb.PlayerEntry, error) {
 	r, err := client.FetchPlayerProfileByName(
@@ -91,6 +109,43 @@ func SetGroup(playerUUID string, groups []string) error {
 	_, err := client.SetPlayerGroups(context.Background(), &systerapb.SetPlayerGroupsRequest{
 		PlayerUUID: playerUUID,
 		Groups:     groups,
+	})
+	return err
+}
+
+// CreateGroup - create group
+func CreateGroup(name, prefix string) error {
+	_, err := client.CreateGroup(context.Background(), &systerapb.CreateGroupRequest{
+		GroupName:   name,
+		GroupPrefix: prefix,
+	})
+	return err
+}
+
+// RemoveGroup - remove group
+func RemoveGroup(name string) error {
+	_, err := client.RemoveGroup(context.Background(), &systerapb.RemoveGroupRequest{
+		GroupName: name,
+	})
+	return err
+}
+
+// AddPermission - add permission
+func AddPermission(name, target string, permissions []string) error {
+	_, err := client.AddPermission(context.Background(), &systerapb.AddPermissionRequest{
+		GroupName:   name,
+		Target:      target,
+		Permissions: permissions,
+	})
+	return err
+}
+
+// RemovePermission - remove permission
+func RemovePermission(name, target string, permissions []string) error {
+	_, err := client.RemovePermission(context.Background(), &systerapb.RemovePermissionRequest{
+		GroupName:   name,
+		Target:      target,
+		Permissions: permissions,
 	})
 	return err
 }

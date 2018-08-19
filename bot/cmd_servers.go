@@ -15,6 +15,11 @@ func cmdServers(s *discordgo.Session, m *discordgo.MessageCreate) {
 		logrus.WithError(err).Errorf("[cmdServers]")
 	}
 
+	if len(servers) == 0 {
+		s.ChannelMessageSend(m.ChannelID, ":warning: Serverlist is Empty.")
+		return
+	}
+
 	var fields []*discordgo.MessageEmbedField
 	for _, server := range servers {
 		field := &discordgo.MessageEmbedField{}

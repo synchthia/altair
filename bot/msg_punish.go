@@ -9,57 +9,66 @@ import (
 	"gitlab.com/Startail/Systera-API/systerapb"
 )
 
-func PunishMessage(data systerapb.PunishEntryStream) {
+func PunishMessage(data systerapb.PunishmentStream) {
 	roomID := os.Getenv("DISCORD_MODERATOR_ALERT_ROOMID")
 	if len(roomID) == 0 {
 		return
 	}
 
-	entry := data.Entry
+	entry := data.PunishEntry
+	entries := []*systerapb.PunishEntry{entry}
 	// -> DISCORD_MODERATOR_ALERT_ROOMID
 	embed := &discordgo.MessageEmbed{
 		Color: 0x009688,
 		Author: &discordgo.MessageEmbedAuthor{
-			Name:    fmt.Sprintf("Punished (%s -> %s)", entry.PunishedFrom.Name, entry.PunishedTo.Name),
-			IconURL: "https://avatar.minecraft.jp/" + entry.PunishedFrom.Name + "/minecraft/m.png",
+			Name:    fmt.Sprintf("Punished %s (%s)", entry.PunishedTo.Name, entry.PunishedTo.UUID),
+			IconURL: "https://avatar.minecraft.jp/" + entry.PunishedTo.UUID + "/minecraft/s.png",
 		},
-		Thumbnail: &discordgo.MessageEmbedThumbnail{
-			URL: "https://avatar.minecraft.jp/" + entry.PunishedTo.Name + "/minecraft/m.png",
-		},
-		Fields: []*discordgo.MessageEmbedField{
-			&discordgo.MessageEmbedField{
-				Name:   "From",
-				Value:  fmt.Sprintf("[%s](%s)", entry.PunishedFrom.Name, "https://minecraft.jp/players/"+entry.PunishedFrom.UUID),
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "To",
-				Value:  fmt.Sprintf("[%s](%s)", entry.PunishedTo.Name, "https://minecraft.jp/players/"+entry.PunishedTo.UUID),
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "Reason",
-				Value:  entry.Reason,
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "Level",
-				Value:  entry.Level.String(),
-				Inline: true,
-			},
-		},
-		Footer: &discordgo.MessageEmbedFooter{
-			Text: fmt.Sprintf("- %s | %s", entry.Level, parseExpire(entry.Date, entry.Expire)),
-		},
+		Fields: punishFields(entries),
 	}
 	session.ChannelMessageSendEmbed(roomID, embed)
 }
 
-func parseExpire(issued, expire int64) string {
-	var msg string
-	msg = fmt.Sprintf("%s", time.Unix(issued/1000, 0).String())
-	if expire != 0 {
-		msg += " / (Expire: " + time.Unix(expire/1000, 0).String() + ")"
+func punishFields(entries []*systerapb.PunishEntry) []*discordgo.MessageEmbedField {
+	var fields []*discordgo.MessageEmbedField
+
+	for cnt, entry := range entries {
+		expire := "*(Expire: -)*"
+		if entry.Expire != 0 {
+			expire = fmt.Sprintf(" *(Expire: %s)*", time.Unix(entry.Expire/1000, 0).Format("2006-01-02 15:04:05"))
+		}
+		if entry.Level == systerapb.PunishLevel_PERMBAN {
+			expire = "*(Expire: FOREVER)*"
+		}
+
+		date := time.Unix(entry.Date/1000, 0).Format("2006-01-02 15:04:05")
+		splitter := ""
+		if cnt < len(entries)-1 {
+			splitter = "\n⠀"
+		}
+
+		field := &discordgo.MessageEmbedField{
+			Name:  fmt.Sprintf("%s **%s** ≫ `%s`", punishLevelEmoji(entry.Level), entry.Level, entry.Reason),
+			Value: fmt.Sprintf("- %s by %s\n%s\n%s", date, entry.PunishedFrom.Name, expire, splitter),
+		}
+
+		fields = append(fields, field)
 	}
-	return msg
+
+	return fields
+}
+
+func punishLevelEmoji(level systerapb.PunishLevel) string {
+	switch level {
+	case systerapb.PunishLevel_WARN:
+		return ":loudspeaker:"
+	case systerapb.PunishLevel_KICK:
+		return ":raised_hand:"
+	case systerapb.PunishLevel_TEMPBAN:
+		return ":octagonal_sign:"
+	case systerapb.PunishLevel_PERMBAN:
+		return ":no_entry:"
+	default:
+		return ":question:"
+	}
 }

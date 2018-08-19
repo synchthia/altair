@@ -28,11 +28,7 @@ func main() {
 
 		// Subscribe
 		go func() {
-			stream.PunishSubs()
-		}()
-
-		go func() {
-			stream.ReportSubs()
+			stream.PunishmentSubs()
 		}()
 	}()
 

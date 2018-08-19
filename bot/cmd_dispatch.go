@@ -12,7 +12,7 @@ func cmdDispatch(s *discordgo.Session, m *discordgo.MessageCreate) {
 	args := strings.Fields(m.Content)
 
 	if len(args) < 2 {
-		s.ChannelMessageSend(m.ChannelID, "!dispatch <global/[ServerName]> <command>")
+		s.ChannelMessageSend(m.ChannelID, "!dispatch <global/ServerName> <command>")
 		return
 	}
 
