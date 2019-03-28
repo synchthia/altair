@@ -196,7 +196,7 @@ func hasRole(s *discordgo.Session, m *discordgo.MessageCreate, roleName []string
 	for _, roleID := range member.Roles {
 		role, _ := s.State.Role(ch.GuildID, roleID)
 		for _, r := range roleName {
-			if role.Name == r {
+			if role.Name == strings.ToLower(r) {
 				return true
 			}
 		}
