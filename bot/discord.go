@@ -43,6 +43,14 @@ func InitDiscordBot(token string) error {
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+	ch, _ := s.State.Channel(m.ChannelID)
+	guilds, _ := s.State.Guild(ch.GuildID)
+
+	if guilds == nil {
+		logrus.Warnf("[Chat] %s tried execute command from out of side: %s", m.Author.Username, m.Content)
+		return
+	}
+
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
