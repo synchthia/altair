@@ -188,15 +188,15 @@ func hasRole(s *discordgo.Session, m *discordgo.MessageCreate, roleName []string
 	ch, _ := s.State.Channel(m.ChannelID)
 	guilds, _ := s.State.Guild(ch.GuildID)
 
-	if m.Author.ID == guilds.OwnerID {
-		return true
-	}
+	// if m.Author.ID == guilds.OwnerID {
+	// 	return true
+	// }
 
 	member, _ := s.State.Member(guilds.ID, m.Author.ID)
 	for _, roleID := range member.Roles {
 		role, _ := s.State.Role(ch.GuildID, roleID)
 		for _, r := range roleName {
-			if role.Name == strings.ToLower(r) {
+			if strings.ToLower(role.Name) == strings.ToLower(r) {
 				return true
 			}
 		}
