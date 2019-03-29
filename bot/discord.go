@@ -169,6 +169,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdSetFavicon(s, m)
 	}
 
+	if strings.Fields(m.Content)[0] == "!seen" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdSeen(s, m)
+	}
+
 	if strings.Fields(m.Content)[0] == "!uuid" {
 		cmdUUID(s, m)
 	}
