@@ -185,6 +185,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdAltLookup(s, m)
 	}
 
+	if strings.Fields(m.Content)[0] == "!shutdown" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdShutdown(s, m)
+	}
+
 	if strings.Fields(m.Content)[0] == "!uuid" {
 		cmdUUID(s, m)
 	}
