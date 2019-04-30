@@ -17,8 +17,11 @@ build-app:
 
   script:
   # Install Apps
-  - apk --no-cache add git openssl
-
+  - apk --no-cache add git openssl openssh-client
+  - mkdir -p ~/.ssh
+  - echo -e "$CI_SSH_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+  - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  - git config --global url."git@gitlab.com:".insteadOf "https://gitlab.com/"
   # Install Golang
   - wget https://storage.googleapis.com/golang/go1.12.4.linux-amd64.tar.gz
   - echo "Extracting golang..." && tar -C /usr/local -xzf go1.12.4.linux-amd64.tar.gz
