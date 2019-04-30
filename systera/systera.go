@@ -101,6 +101,24 @@ func FetchPlayerProfile(playerUUID string) (*systerapb.PlayerEntry, error) {
 }
 
 // ----------------
+// AltLookup
+// ----------------
+
+// AltLookup - Lookup Player's Alternative Accounts
+func AltLookup(playerUUID string) ([]*systerapb.AltLookupEntry, error) {
+	r, err := client.AltLookup(
+		context.Background(),
+		&systerapb.AltLookupRequest{
+			PlayerUUID: playerUUID,
+		},
+	)
+	if r == nil {
+		return nil, err
+	}
+	return r.Entries, err
+}
+
+// ----------------
 // Group
 // ----------------
 
