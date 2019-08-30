@@ -7,7 +7,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/Startail/altair/nebula"
+	"github.com/synchthia/altair/nebula"
 )
 
 func cmdAddServer(s *discordgo.Session, m *discordgo.MessageCreate) {

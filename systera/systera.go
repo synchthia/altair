@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"gitlab.com/Startail/Systera-API/systerapb"
+	"github.com/synchthia/systera-api/systerapb"
 	"google.golang.org/grpc"
 )
 

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/Startail/altair/systera"
+	"github.com/synchthia/altair/systera"
 )
 
 func cmdRemovePermission(s *discordgo.Session, m *discordgo.MessageCreate) {

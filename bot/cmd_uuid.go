@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gitlab.com/Startail/altair/systera"
+	"github.com/synchthia/altair/systera"
 
 	"github.com/bwmarrin/discordgo"
 )

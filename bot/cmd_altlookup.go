@@ -7,8 +7,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/Startail/Systera-API/systerapb"
-	"gitlab.com/Startail/altair/systera"
+	"github.com/synchthia/systera-api/systerapb"
+	"github.com/synchthia/altair/systera"
 )
 
 // Dummy Entry

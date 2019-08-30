@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"gitlab.com/Startail/Systera-API/systerapb"
+	"github.com/synchthia/systera-api/systerapb"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/Startail/altair/systera"
+	"github.com/synchthia/altair/systera"
 )
 
 func cmdLookup(s *discordgo.Session, m *discordgo.MessageCreate) {

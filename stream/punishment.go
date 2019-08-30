@@ -7,8 +7,8 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/Startail/Systera-API/systerapb"
-	"gitlab.com/Startail/altair/bot"
+	"github.com/synchthia/systera-api/systerapb"
+	"github.com/synchthia/altair/bot"
 )
 
 // PunishmentSubs - Subscribe Report Stream

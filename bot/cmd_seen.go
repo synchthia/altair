@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/Startail/Systera-API/systerapb"
-	"gitlab.com/Startail/altair/systera"
+	"github.com/synchthia/systera-api/systerapb"
+	"github.com/synchthia/altair/systera"
 )
 
 func cmdSeen(s *discordgo.Session, m *discordgo.MessageCreate) {

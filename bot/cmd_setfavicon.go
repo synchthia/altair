@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"gitlab.com/Startail/altair/nebula"
+	"github.com/synchthia/altair/nebula"
 
 	"github.com/bwmarrin/discordgo"
 )

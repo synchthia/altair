@@ -4,11 +4,11 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"gitlab.com/Startail/altair/bot"
-	"gitlab.com/Startail/altair/logger"
-	"gitlab.com/Startail/altair/nebula"
-	"gitlab.com/Startail/altair/stream"
-	"gitlab.com/Startail/altair/systera"
+	"github.com/synchthia/altair/bot"
+	"github.com/synchthia/altair/logger"
+	"github.com/synchthia/altair/nebula"
+	"github.com/synchthia/altair/stream"
+	"github.com/synchthia/altair/systera"
 )
 
 func main() {

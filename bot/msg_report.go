@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/Startail/Systera-API/systerapb"
+	"github.com/synchthia/systera-api/systerapb"
 )
 
 func ReportMessage(data systerapb.PunishmentStream) {

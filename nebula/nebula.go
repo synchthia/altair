@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"gitlab.com/Startail/Nebula-API/nebulapb"
+	"github.com/synchthia/nebula-api/nebulapb"
 	"google.golang.org/grpc"
 )
 
