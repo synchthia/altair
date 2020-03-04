@@ -122,6 +122,14 @@ func AltLookup(playerUUID string) ([]*systerapb.AltLookupEntry, error) {
 // Group
 // ----------------
 
+// GetGroups - get groups
+func GetGroups() (*systerapb.FetchGroupsResponse, error) {
+	r, err := client.FetchGroups(context.Background(), &systerapb.FetchGroupsRequest{
+		ServerName: "global",
+	})
+	return r, err
+}
+
 // SetGroup - set players group
 func SetGroup(playerUUID string, groups []string) error {
 	_, err := client.SetPlayerGroups(context.Background(), &systerapb.SetPlayerGroupsRequest{

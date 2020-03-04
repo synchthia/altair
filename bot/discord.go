@@ -113,6 +113,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdDispatch(s, m)
 	}
 
+	if strings.Fields(m.Content)[0] == "!listgroup" {
+		if !hasRole(s, m, []string{"administrator", "developer"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdListGroup(s, m)
+	}
+
 	if strings.Fields(m.Content)[0] == "!setgroup" {
 		if !hasRole(s, m, []string{"administrator", "developer"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
