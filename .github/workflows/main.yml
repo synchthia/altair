@@ -8,7 +8,7 @@ jobs:
     name: build-docker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Login to Google Container Registry
         env:
           GCP_SERVICE_ACCOUNT: ${{ secrets.STARTAIL_GCP_SERVICE_ACCOUNT }}
