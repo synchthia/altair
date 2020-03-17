@@ -75,3 +75,20 @@ func SetFavicon(favicon string) error {
 
 	return err
 }
+
+func SetLockdown(name string, enabled bool, description string) (*nebulapb.ServerEntry, error) {
+	lockdown := &nebulapb.Lockdown{
+		Enabled: enabled,
+	}
+
+	if description != "" {
+		lockdown.Description = description
+	}
+
+	r, err := client.SetLockdown(context.Background(), &nebulapb.SetLockdownRequest{
+		Name:     name,
+		Lockdown: lockdown,
+	})
+
+	return r.GetEntry(), err
+}
