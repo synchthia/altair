@@ -65,6 +65,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	if strings.Fields(m.Content)[0] == "!server" {
+		if !hasRole(s, m, []string{"administrator"}) {
+			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
+			return
+		}
+		cmdServer(s, m)
+	}
+
 	if strings.Fields(m.Content)[0] == "!servers" {
 		if !hasRole(s, m, []string{"administrator"}) {
 			s.ChannelMessageSend(m.ChannelID, ":warning: You don't have Permission to do this.")
