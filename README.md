@@ -1,6 +1,6 @@
 # ALTAIR
 
-![CI](https://github.com/synchthia/altair/workflows/CI/badge.svg?branch=master)
+[![CI](https://github.com/synchthia/altair/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/synchthia/altair/actions?query=workflow%3ACI)
 
 STARTAIL management bot.
 
