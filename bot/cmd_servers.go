@@ -23,21 +23,30 @@ func cmdServers(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var fields []*discordgo.MessageEmbedField
 	for _, server := range servers {
 		field := &discordgo.MessageEmbedField{}
+		statusIcon := ""
+		if server.Fallback {
+			statusIcon += ":door:"
+		}
+		if server.Lockdown.Enabled {
+			statusIcon += ":lock:"
+		}
 		if server.Status.Online {
 			field = &discordgo.MessageEmbedField{
-				Name: fmt.Sprintf(":white_check_mark: **%s (%s)** - %d/%d",
+				Name: fmt.Sprintf(":white_check_mark: **%s (%s)** - %d/%d %s",
 					server.DisplayName,
 					server.Name,
 					server.Status.Players.Online,
 					server.Status.Players.Max,
+					statusIcon,
 				),
 				Value: fmt.Sprintf("`%s:%d`", server.Address, server.Port),
 			}
 		} else {
 			field = &discordgo.MessageEmbedField{
-				Name: fmt.Sprintf(":warning: **%s (%s)** - **OFFLINE**",
+				Name: fmt.Sprintf(":warning: **%s (%s)** - **OFFLINE** %s",
 					server.DisplayName,
 					server.Name,
+					statusIcon,
 					// server.Status.Players.Online,
 					// server.Status.Players.Max,
 				),
