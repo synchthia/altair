@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/synchthia/altair/bot"
@@ -19,17 +20,18 @@ func main() {
 	logrus.Printf("[ALTAIR] Starting ALTAIR Bot...")
 
 	// Redis
-	go func() {
-		redisAddr := os.Getenv("REDIS_ADDRESS")
-		if len(redisAddr) == 0 {
-			redisAddr = "localhost:6379"
-		}
-		stream.NewRedisPool(redisAddr)
+	redisAddr := os.Getenv("REDIS_ADDRESS")
+	if len(redisAddr) == 0 {
+		redisAddr = "localhost:6379"
+	}
+	pool := stream.NewRedisPool(redisAddr)
 
-		// Subscribe
-		go func() {
-			stream.PunishmentSubs()
-		}()
+	// Subscribe
+	go func() {
+		for {
+			stream.PunishmentSubs(pool)
+			time.Sleep(3 * time.Second)
+		}
 	}()
 
 	// gRPC

@@ -7,15 +7,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var pool *redis.Pool
-
 // NewRedisPool - redis Connection Pooling
-func NewRedisPool(server string) {
+func NewRedisPool(server string) *redis.Pool {
 	logrus.WithFields(logrus.Fields{
 		"server": server,
 	}).Infof("[Redis] Creating Pool...")
 
-	pool = &redis.Pool{
+	pool := &redis.Pool{
 		MaxIdle:   12,
 		MaxActive: 0,
 		//IdleTimeout: 240 * time.Second,
@@ -40,4 +38,6 @@ func NewRedisPool(server string) {
 			return err
 		},
 	}
+
+	return pool
 }
