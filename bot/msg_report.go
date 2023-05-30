@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 	"github.com/synchthia/systera-api/systerapb"
 )
 
@@ -21,31 +22,38 @@ func ReportMessage(data systerapb.PunishmentStream) {
 		Color: 0xFF9800,
 		Author: &discordgo.MessageEmbedAuthor{
 			Name:    fmt.Sprintf("Reported (%s -> %s)", entry.From.Name, entry.To.Name),
-			IconURL: "https://avatar.minecraft.jp/" + entry.From.Name + "/minecraft/m.png",
+			IconURL: "https://minotar.net/helm/" + entry.From.Name + "/96.png",
 		},
 		Thumbnail: &discordgo.MessageEmbedThumbnail{
-			URL: "https://avatar.minecraft.jp/" + entry.To.Name + "/minecraft/m.png",
+			URL: "https://minotar.net/helm/" + entry.To.Name + "/96.png",
 		},
 		Fields: []*discordgo.MessageEmbedField{
-			&discordgo.MessageEmbedField{
+			{
+				Name:   "Server",
+				Value:  entry.Server,
+				Inline: false,
+			},
+
+			{
 				Name:   "From",
-				Value:  fmt.Sprintf("[%s](%s)", entry.From.Name, "https://minecraft.jp/players/"+entry.From.UUID),
+				Value:  fmt.Sprintf("[%s](%s)", entry.From.Name, "https://ja.namemc.com/profile/"+entry.From.Uuid),
 				Inline: true,
 			},
-			&discordgo.MessageEmbedField{
+			{
 				Name:   "To",
-				Value:  fmt.Sprintf("[%s](%s)", entry.To.Name, "https://minecraft.jp/players/"+entry.To.UUID),
+				Value:  fmt.Sprintf("[%s](%s)", entry.To.Name, "https://ja.namemc.com/profile/"+entry.To.Uuid),
 				Inline: true,
 			},
-			&discordgo.MessageEmbedField{
+			{
 				Name:   "Message",
-				Value:  entry.Message,
+				Value:  fmt.Sprintf("```\n%s\n```", entry.Message),
 				Inline: false,
 			},
 		},
-		Footer: &discordgo.MessageEmbedFooter{
-			Text: fmt.Sprintf("- %s | %s", entry.Server, time.Unix(entry.Date/1000, 0).String()),
-		},
+		Timestamp: time.UnixMilli(entry.Date).Format(time.RFC3339),
 	}
-	session.ChannelMessageSendEmbed(roomID, embed)
+	_, err := session.ChannelMessageSendEmbed(roomID, embed)
+	if err != nil {
+		logrus.WithError(err).Errorf("Failed parse ReportEntry")
+	}
 }

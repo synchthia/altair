@@ -18,13 +18,15 @@ func NewClient() {
 	if len(address) == 0 {
 		address = "localhost:17300"
 	}
+
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		logrus.WithError(err).Fatalf("[Systera] Failed connect to Systera-API")
 		return
 	}
-	logrus.Printf("[Systera] Connected Systera-API")
-	//defer conn.Close()
+	logrus.WithFields(logrus.Fields{
+		"address": address,
+	}).Debugf("[Systera] Connecting to Systera-API")
 
 	cConn = conn
 	client = systerapb.NewSysteraClient(conn)
@@ -77,7 +79,7 @@ func FetchPlayerProfileByName(playerName string) (*systerapb.PlayerEntry, error)
 	r, err := client.FetchPlayerProfileByName(
 		context.Background(),
 		&systerapb.FetchPlayerProfileByNameRequest{
-			PlayerName: playerName,
+			Name: playerName,
 		},
 	)
 	if r == nil {
@@ -91,7 +93,7 @@ func FetchPlayerProfile(playerUUID string) (*systerapb.PlayerEntry, error) {
 	r, err := client.FetchPlayerProfile(
 		context.Background(),
 		&systerapb.FetchPlayerProfileRequest{
-			PlayerUUID: playerUUID,
+			Uuid: playerUUID,
 		},
 	)
 	if r == nil {
@@ -109,7 +111,7 @@ func AltLookup(playerUUID string) ([]*systerapb.AltLookupEntry, error) {
 	r, err := client.AltLookup(
 		context.Background(),
 		&systerapb.AltLookupRequest{
-			PlayerUUID: playerUUID,
+			PlayerUuid: playerUUID,
 		},
 	)
 	if r == nil {
@@ -123,9 +125,9 @@ func AltLookup(playerUUID string) ([]*systerapb.AltLookupEntry, error) {
 // ----------------
 
 // GetGroups - get groups
-func GetGroups() (*systerapb.FetchGroupsResponse, error) {
+func GetGroups(server string) (*systerapb.FetchGroupsResponse, error) {
 	r, err := client.FetchGroups(context.Background(), &systerapb.FetchGroupsRequest{
-		ServerName: "global",
+		ServerName: server,
 	})
 	return r, err
 }
@@ -133,8 +135,8 @@ func GetGroups() (*systerapb.FetchGroupsResponse, error) {
 // SetGroup - set players group
 func SetGroup(playerUUID string, groups []string) error {
 	_, err := client.SetPlayerGroups(context.Background(), &systerapb.SetPlayerGroupsRequest{
-		PlayerUUID: playerUUID,
-		Groups:     groups,
+		Uuid:   playerUUID,
+		Groups: groups,
 	})
 	return err
 }
@@ -156,6 +158,9 @@ func RemoveGroup(name string) error {
 	return err
 }
 
+// ------------
+// Permissions
+// ------------
 // AddPermission - add permission
 func AddPermission(name, target string, permissions []string) error {
 	_, err := client.AddPermission(context.Background(), &systerapb.AddPermissionRequest{
@@ -183,9 +188,30 @@ func RemovePermission(name, target string, permissions []string) error {
 // LookupPunish - Lookup player's Punishments
 func LookupPunish(playerUUID string) ([]*systerapb.PunishEntry, error) {
 	r, err := client.GetPlayerPunish(context.Background(), &systerapb.GetPlayerPunishRequest{
-		PlayerUUID:     playerUUID,
+		Uuid:           playerUUID,
 		FilterLevel:    0,
 		IncludeExpired: true,
 	})
 	return r.Entry, err
+}
+
+// Punish - Punish the Player
+func Punish(playerUUID, reason string) error {
+	_, err := client.SetPlayerPunish(context.Background(), &systerapb.SetPlayerPunishRequest{
+		Force: true,
+		Entry: &systerapb.PunishEntry{
+			Available: true,
+			Level:     systerapb.PunishLevel_WARN,
+			Reason:    reason,
+			PunishedFrom: &systerapb.PlayerIdentity{
+				Uuid: "",
+				Name: "Console",
+			},
+			PunishedTo: &systerapb.PlayerIdentity{
+				Uuid: playerUUID,
+				Name: "",
+			},
+		},
+	})
+	return err
 }
